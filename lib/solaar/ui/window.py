@@ -16,6 +16,7 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import ctypes
+import ctypes.wintypes
 import logging
 import platform
 
@@ -489,7 +490,7 @@ def select(receiver_path, device_number=None):
 def _trim_memory():
     # Windows: let the OS reclaim pages the hidden app is not using; they are paged back in when needed
     if platform.system() == "Windows":
-        ctypes.windll.kernel32.K32EmptyWorkingSet(ctypes.windll.kernel32.GetCurrentProcess())
+        ctypes.windll.kernel32.K32EmptyWorkingSet(ctypes.wintypes.HANDLE(-1))  # -1: current process, as a 64-bit handle
     return False  # run once
 
 
