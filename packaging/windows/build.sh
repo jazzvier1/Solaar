@@ -3,7 +3,7 @@
 # Run from the MSYS2 UCRT64 shell after installing the packages listed in README.md plus git, zip and ntldd.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
-git diff --quiet HEAD || { echo "Commit your changes first: the zip is built from HEAD"; exit 1; }
+git -c core.autocrlf=true diff --quiet HEAD || { echo "Commit your changes first: the zip is built from HEAD"; exit 1; }
 
 P=/ucrt64
 PY=$(basename "$(ls -d $P/lib/python3.*/ | head -1)")
