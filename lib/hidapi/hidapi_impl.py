@@ -67,6 +67,11 @@ _library_paths = (
     "libhidapi-0.dll",
 )
 
+# Windows rejects HID_GET_INPUT_REPORT on HID++ reports, so HID++ is recognized by collection usage instead.
+# shortcut: only the Logitech G long-report collection (headsets etc.), receivers split short/long across
+# collections on Windows and need per-report-ID paths before they can be added here
+_WINDOWS_HIDPP_LONG_USAGES = {(0xFF43, 0x0202)}
+
 for lib in _library_paths:
     try:
         _hidapi = ctypes.cdll.LoadLibrary(lib)
@@ -274,22 +279,25 @@ def _match(
         if len(report) == 1 + 19 and report[0] == 0x11:
             device["hidpp_long"] = True
 
-    try:
-        device_handle = open_path(device["path"])
+    if platform.system() == "Windows":
+        device["hidpp_long"] = (device["usage_page"], device["usage"]) in _WINDOWS_HIDPP_LONG_USAGES
+    else:
+        try:
+            device_handle = open_path(device["path"])
 
-        for check_func in (check_hidpp_short, check_hidpp_long):
-            try:
-                check_func()
-            except HIDError as e:
-                logger.info(
-                    f"Error while {check_func.__name__}"
-                    f"on device {device['path']} ({bus_id}/{vid:04X}/{pid:04X}) for hidpp check: {e}"
-                )
-    except HIDError as e:
-        logger.info(f"Error opening device {device['path']} ({bus_id}/{vid:04X}/{pid:04X}) for hidpp check: {e}")
-    finally:
-        if device_handle:
-            close(device_handle)
+            for check_func in (check_hidpp_short, check_hidpp_long):
+                try:
+                    check_func()
+                except HIDError as e:
+                    logger.info(
+                        f"Error while {check_func.__name__}"
+                        f"on device {device['path']} ({bus_id}/{vid:04X}/{pid:04X}) for hidpp check: {e}"
+                    )
+        except HIDError as e:
+            logger.info(f"Error opening device {device['path']} ({bus_id}/{vid:04X}/{pid:04X}) for hidpp check: {e}")
+        finally:
+            if device_handle:
+                close(device_handle)
 
     logger.info(
         "Found device BID %s VID %04X PID %04X HID++ SHORT %s LONG %s",

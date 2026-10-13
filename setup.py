@@ -70,9 +70,9 @@ setup(
     python_requires=">=3.8",
     install_requires=[
         'evdev (>= 1.1.2) ; platform_system=="Linux"',
-        "pyudev (>= 0.13)",
+        'pyudev (>= 0.13) ; platform_system=="Linux"',
         "PyYAML (>= 3.12)",
-        "python-xlib (>= 0.27)",
+        'python-xlib (>= 0.27) ; platform_system=="Linux"',
         "psutil (>= 5.4.3)",
         'dbus-python ; platform_system=="Linux"',
         "PyGObject",
