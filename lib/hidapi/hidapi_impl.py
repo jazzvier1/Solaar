@@ -28,7 +28,6 @@ from __future__ import annotations
 import atexit
 import ctypes
 import logging
-import os
 import platform
 import typing
 
@@ -67,10 +66,6 @@ _library_paths = (
     "hidapi.dll",
     "libhidapi-0.dll",
 )
-
-if platform.system() == "Windows":
-    # Python 3.8+ no longer searches PATH for DLLs; allow hidapi.dll shipped next to this module
-    os.add_dll_directory(os.path.dirname(os.path.abspath(__file__)))
 
 # Windows rejects HID_GET_INPUT_REPORT on HID++ reports, so HID++ is recognized by collection usage instead.
 # shortcut: only the Logitech G long-report collection (headsets etc.), receivers split short/long across
