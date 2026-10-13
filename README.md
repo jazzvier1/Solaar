@@ -32,30 +32,35 @@ Other Logitech G devices that expose the HID++ collection `FF43/0202` should wor
 
 ## Installation
 
-1. Install [MSYS2](https://www.msys2.org/) (or run `winget install MSYS2.MSYS2`).
-2. In the **MSYS2 UCRT64** shell, install GTK, PyGObject, hidapi and the Python dependencies:
+No installer, no admin rights, nothing else to install (Python and GTK are bundled):
 
-   ```bash
-   pacman -S --needed mingw-w64-ucrt-x86_64-gtk3 mingw-w64-ucrt-x86_64-python-gobject mingw-w64-ucrt-x86_64-python-yaml mingw-w64-ucrt-x86_64-python-psutil mingw-w64-ucrt-x86_64-python-typing_extensions mingw-w64-ucrt-x86_64-hidapi mingw-w64-ucrt-x86_64-adwaita-icon-theme
-   ```
+1. Download **[Solaar-Windows.zip](https://github.com/jazzvier1/Solaar/releases/latest/download/Solaar-Windows.zip)** (~37 MB).
+2. Extract it anywhere, e.g. `C:\Tools\Solaar-Windows`.
+3. Double-click **`Solaar.bat`**.
 
-3. Clone this repository and start Solaar from a normal Windows terminal:
-
-   ```bat
-   git clone https://github.com/jazzvier1/Solaar.git
-   cd Solaar
-   C:\msys64\ucrt64\bin\pythonw.exe bin\solaar
-   ```
-
-## Usage
-
-- `C:\msys64\ucrt64\bin\python.exe bin\solaar show` prints every detected device and its settings.
-- `C:\msys64\ucrt64\bin\python.exe bin\solaar config G733 sidetone 50` changes one setting from the terminal.
-- To start with Windows, minimized: press `Win+R`, open `shell:startup`, and create a shortcut with the target
-  `C:\msys64\ucrt64\bin\pythonw.exe C:\path\to\Solaar\bin\solaar --window=hide`.
+If Windows warns that the file came from the internet, choose *More info → Run anyway*
+(or right-click the zip → *Properties* → *Unblock* before extracting).
 
 Close G HUB first (ideally uninstall it): it re-applies its own settings to the device.
 Settings are stored in `%USERPROFILE%\.config\solaar\config.yaml`.
+
+## Usage
+
+- **Start with Windows, minimized to the tray:** press `Win+R`, type `shell:startup`, and in that folder create a
+  shortcut to `Solaar.bat` with `--window=hide` added at the end of its *Target*.
+- **Command line:** in the extracted folder, `solaar-cli show` prints every device and its settings,
+  `solaar-cli config G733 sidetone 50` changes one setting.
+
+## Run from source / build the zip
+
+1. Install [MSYS2](https://www.msys2.org/) (or `winget install MSYS2.MSYS2`), then in the **MSYS2 UCRT64** shell:
+
+   ```bash
+   pacman -S --needed git zip mingw-w64-ucrt-x86_64-ntldd mingw-w64-ucrt-x86_64-gtk3 mingw-w64-ucrt-x86_64-python-gobject mingw-w64-ucrt-x86_64-python-yaml mingw-w64-ucrt-x86_64-python-psutil mingw-w64-ucrt-x86_64-python-typing_extensions mingw-w64-ucrt-x86_64-hidapi mingw-w64-ucrt-x86_64-adwaita-icon-theme
+   git clone https://github.com/jazzvier1/Solaar.git && cd Solaar
+   ```
+
+2. Run it with `python bin/solaar`, or build `dist/Solaar-Windows.zip` with `bash packaging/windows/build.sh`.
 
 ## Upstream
 
