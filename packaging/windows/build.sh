@@ -3,6 +3,7 @@
 # Run from the MSYS2 UCRT64 shell after installing the packages listed in README.md plus git, zip and ntldd.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
+git diff --quiet HEAD || { echo "Commit your changes first: the zip is built from HEAD"; exit 1; }
 
 P=/ucrt64
 PY=$(basename "$(ls -d $P/lib/python3.*/ | head -1)")
@@ -18,7 +19,8 @@ cp packaging/windows/*.bat README.md LICENSE.txt "$OUT/"
 # Python stdlib without tests/IDE/Tk, plus only the site-packages Solaar imports
 cp $P/bin/python.exe $P/bin/pythonw.exe "$RT/bin/"
 tar -C $P/lib -c --exclude=__pycache__ --exclude="$PY/site-packages" --exclude="$PY/test" --exclude="$PY/idlelib" \
-    --exclude="$PY/tkinter" --exclude="$PY/turtledemo" --exclude="$PY/ensurepip" "$PY" | tar -x -C "$RT/lib"
+    --exclude="$PY/tkinter" --exclude="$PY/turtledemo" --exclude="$PY/ensurepip" \
+    --exclude="$PY/lib-dynload/_tkinter*" "$PY" | tar -x -C "$RT/lib"
 for m in gi cairo yaml _yaml psutil typing_extensions.py; do
     cp -r "$P/lib/$PY/site-packages/$m" "$RT/lib/$PY/site-packages/"
 done
