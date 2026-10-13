@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds dist/Solaar-Windows.zip: Solaar plus a trimmed MSYS2 UCRT64 runtime (Python, GTK3, hidapi).
-# Run from the MSYS2 UCRT64 shell after installing the packages listed in README.md (and `zip`).
+# Run from the MSYS2 UCRT64 shell after installing the packages listed in README.md plus git, zip and ntldd.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
@@ -32,8 +32,8 @@ cp -r $P/share/icons/Adwaita $P/share/icons/hicolor "$RT/share/icons/"
 cp -r $P/share/glib-2.0/schemas "$RT/share/glib-2.0/"
 
 # DLLs: everything from /ucrt64 that Python, the extension modules, GTK (loaded by gi at runtime) and hidapi need
-deps=("$RT"/bin/*.exe $(find "$RT/lib" -name '*.pyd' -o -name '*.dll') $P/bin/libgtk-3-0.dll $P/bin/libhidapi-0.dll)
-ldd "${deps[@]}" | awk '$3 ~ /^\/ucrt64\// {print $3}' | sort -u | xargs -I{} cp -n {} "$RT/bin/"
+deps=($P/bin/python.exe $(cd "$RT" && find lib -name '*.pyd' -o -name '*.dll' | sed "s|^|$P/|") $P/bin/libgtk-3-0.dll $P/bin/libhidapi-0.dll)
+ntldd -R "${deps[@]}" | awk '{print $3}' | grep -i 'ucrt64.bin' | sort -u | cygpath -u -f - | xargs -I{} cp -n {} "$RT/bin/"
 cp -n $P/bin/libgtk-3-0.dll $P/bin/libhidapi-0.dll "$RT/bin/"
 
 (cd dist && zip -qr9 Solaar-Windows.zip Solaar-Windows)

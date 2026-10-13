@@ -119,7 +119,9 @@ def _parse_arguments():
         args.window = "show"  # default behaviour is to show main window
 
     global battery_icons_style
-    battery_icons_style = args.battery_icons if args.battery_icons is not None else "regular"
+    # the Adwaita theme shipped with GTK on Windows (MSYS2) only has symbolic battery icons
+    default_style = "symbolic" if platform.system() == "Windows" else "regular"
+    battery_icons_style = args.battery_icons if args.battery_icons is not None else default_style
     global tray_icon_size
     tray_icon_size = args.tray_icon_size
 
