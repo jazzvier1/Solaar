@@ -17,6 +17,7 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import argparse
+import ctypes
 import faulthandler
 import importlib
 import locale
@@ -158,6 +159,17 @@ def _handlesig(signl, stack):
         sys.exit(0)
 
 
+_instance_mutex = None
+
+
+def _already_running():
+    # Gtk.Application uniqueness needs D-Bus, which Windows lacks; the named mutex lives as long as this process
+    global _instance_mutex
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    _instance_mutex = kernel32.CreateMutexW(None, False, r"Local\Solaar")
+    return ctypes.get_last_error() == 183  # ERROR_ALREADY_EXISTS
+
+
 def main():
     if platform.system() not in ("Darwin", "Windows"):
         _require("pyudev", "python3-pyudev")
@@ -173,6 +185,11 @@ def main():
         # explicit close before return
         temp.close()
         return result
+
+    if platform.system() == "Windows" and _already_running():
+        logger.warning("Solaar is already running, use its tray icon")
+        temp.close()
+        return
 
     gi = _require("gi", "python3-gi (in Ubuntu) or python3-gobject (in Fedora)")
     _require("gi.repository.Gtk", "gir1.2-gtk-3.0", gi, "Gtk", "3.0")

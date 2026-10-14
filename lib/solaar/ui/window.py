@@ -489,7 +489,7 @@ def select(receiver_path, device_number=None):
 
 def _trim_memory():
     # Windows: let the OS reclaim pages the hidden app is not using; they are paged back in when needed
-    if platform.system() == "Windows":
+    if platform.system() == "Windows" and _window is not None and not _window.get_visible():
         ctypes.windll.kernel32.K32EmptyWorkingSet(ctypes.wintypes.HANDLE(-1))  # -1: current process, as a 64-bit handle
     return False  # run once
 

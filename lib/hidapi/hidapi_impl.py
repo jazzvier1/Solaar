@@ -118,7 +118,7 @@ _cDeviceInfo_fields = [
     ("interface_number", ctypes.c_int),
     ("next", ctypes.POINTER(_cDeviceInfo)),
 ]
-if _hid_version.contents.major >= 0 and _hid_version.contents.minor >= 13:
+if (_hid_version.contents.major, _hid_version.contents.minor) >= (0, 13):
     _cDeviceInfo_fields.append(("bus_type", ctypes.c_int))
 _cDeviceInfo._fields_ = _cDeviceInfo_fields
 
@@ -416,22 +416,6 @@ def enumerate(filter_func) -> DeviceInfo:
             yield d_info
 
 
-def open(vendor_id, product_id, serial=None):
-    """Open a HID device by its Vendor ID, Product ID and optional serial number.
-
-    If no serial is provided, the first device with the specified IDs is opened.
-
-    :returns: an opaque device handle, or ``None``.
-    """
-    if serial is not None:
-        serial = ctypes.create_unicode_buffer(serial)
-
-    device_handle = _hidapi.hid_open(vendor_id, product_id, serial)
-    if device_handle is None:
-        raise HIDError(_hidapi.hid_error(None))
-    return device_handle
-
-
 def open_path(device_path: str) -> int:
     """Open a HID device by its path name.
 
@@ -542,7 +526,7 @@ def get_manufacturer(device_handle):
 
     :param device_handle: a device handle returned by open() or open_path().
     """
-    return _readstring(device_handle, _hidapi.get_manufacturer_string)
+    return _readstring(device_handle, _hidapi.hid_get_manufacturer_string)
 
 
 def get_product(device_handle):
@@ -550,7 +534,7 @@ def get_product(device_handle):
 
     :param device_handle: a device handle returned by open() or open_path().
     """
-    return _readstring(device_handle, _hidapi.get_product_string)
+    return _readstring(device_handle, _hidapi.hid_get_product_string)
 
 
 def get_serial(device_handle):
@@ -558,4 +542,4 @@ def get_serial(device_handle):
 
     :param device_handle: a device handle returned by open() or open_path().
     """
-    return _readstring(device_handle, _hidapi.get_serial_number_string)
+    return _readstring(device_handle, _hidapi.hid_get_serial_number_string)
