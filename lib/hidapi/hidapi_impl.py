@@ -201,29 +201,21 @@ def _enumerate_devices():
     return unique_devices
 
 
-# Use a separate thread to check if devices have been removed or connected
+# Use a separate thread to announce connected devices
 class _DeviceMonitor(Thread):
     def __init__(self, device_callback, polling_delay=5.0):
         self.device_callback = device_callback
         self.polling_delay = polling_delay
-        self.prev_devices = None
         # daemon threads are automatically killed when main thread exits
         super().__init__(daemon=True)
 
     def run(self):
-        # Populate initial set of devices so startup doesn't cause any callbacks
-        self.prev_devices = {tuple(dev.items()): dev for dev in _enumerate_devices()}
-
-        # Continously enumerate devices and raise callback for changes
+        # Announce every present device on each poll and let the listener skip the ones it already handles.
+        # Comparing snapshots instead misses a device unplugged and replugged (or reset by sleep) between two polls.
+        # shortcut: a matched device that cannot be opened reports its error on every poll, rare for HID++ collections
         while True:
-            current_devices = {tuple(dev.items()): dev for dev in _enumerate_devices()}
-            for key, device in self.prev_devices.items():
-                if key not in current_devices:
-                    self.device_callback(ACTION_REMOVE, device)
-            for key, device in current_devices.items():
-                if key not in self.prev_devices:
-                    self.device_callback(ACTION_ADD, device)
-            self.prev_devices = current_devices
+            for device in _enumerate_devices():
+                self.device_callback(ACTION_ADD, device)
             sleep(self.polling_delay)
 
 
@@ -390,13 +382,10 @@ def monitor_glib(
     """
 
     def device_callback(action: str, device):
-        if action == ACTION_ADD:
-            d_info = _match(action, device, filter_func)
-            if d_info:
-                glib.idle_add(callback, action, d_info)
-        elif action == ACTION_REMOVE:
-            # Removed devices will be detected by Solaar directly
-            pass
+        # removed devices are detected by Solaar directly, when reading from them fails
+        d_info = _match(action, device, filter_func)
+        if d_info:
+            glib.idle_add(callback, action, d_info)
 
     monitor = _DeviceMonitor(device_callback=device_callback)
     monitor.start()

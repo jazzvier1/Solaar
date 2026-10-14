@@ -491,6 +491,8 @@ def _process_receiver_event(action, device_info):
     assert action is not None
     assert device_info is not None
     assert _error_callback
+    if action == ACTION_ADD and device_info.path in _all_listeners:
+        return False  # already listening; the hidapi monitor re-announces present devices on every poll
     logger.info("receiver event %s %s", action, device_info)
     # whatever the action, stop any previous receivers at this path
     listener_thread = _all_listeners.pop(device_info.path, None)
