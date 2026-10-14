@@ -30,3 +30,4 @@ __pycache__/
 Pipfile
 Pipfile.lock
 /~/
+.ruff_cache/
