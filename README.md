@@ -42,7 +42,7 @@ or right-click the zip → *Properties* → *Unblock* before extracting.
 
 ## What works
 
-Headsets tested: **G733** (USB Lightspeed dongle) and **G935**.
+Tested on: **G733** and **G935** headsets, **G203** wired mouse.
 
 | Feature | Status |
 |---|:---:|
@@ -51,7 +51,7 @@ Headsets tested: **G733** (USB Lightspeed dongle) and **G935**.
 | Battery level and voltage | ✅ |
 | LED effects | ✅ read · changing them is untested |
 | Tray icon, start minimized | ✅ |
-| Wired Logitech G mice (e.g. G203): DPI and lights | 🧪 new, feedback welcome |
+| Wired Logitech G mice: DPI and lights | ✅ G203 (other models: feedback welcome) |
 | Blue VO!CE | ❌ |
 | Mice and keyboards on Unifying / Bolt / Lightspeed receivers | ❌ not yet |
 | Rules and key remapping | ❌ Linux only |
