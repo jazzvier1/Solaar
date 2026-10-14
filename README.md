@@ -9,6 +9,7 @@ Sidetone, equalizer, battery and LEDs for Logitech G headsets, DPI and lights fo
 
 [![Latest release](https://img.shields.io/github/v/release/jazzvier1/Solaar-Windows?label=release)](https://github.com/jazzvier1/Solaar-Windows/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/jazzvier1/Solaar-Windows/total)](https://github.com/jazzvier1/Solaar-Windows/releases)
+[![Build](https://github.com/jazzvier1/Solaar-Windows/actions/workflows/windows.yml/badge.svg)](https://github.com/jazzvier1/Solaar-Windows/actions/workflows/windows.yml)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D6)
 [![License: GPL v2+](https://img.shields.io/badge/license-GPL%20v2%2B-blue)](LICENSE.txt)
 

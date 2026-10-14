@@ -34,26 +34,20 @@ def _data_files():
     for mo in glob("share/locale/*/LC_MESSAGES/solaar.mo"):
         yield dirname(mo), [mo]
 
-    yield "share/applications", ["share/applications/solaar.desktop"]
-    yield "lib/udev/rules.d", ["rules.d/42-logitech-unify-permissions.rules"]
-    yield "share/metainfo", ["share/solaar/io.github.pwr_solaar.solaar.metainfo.xml"]
-
 
 setup(
     name=NAME.lower(),
     version=version,
-    description="Linux device manager for Logitech receivers, keyboards, mice, and tablets.",
+    description="Windows device manager for Logitech G headsets and mice (port of Solaar).",
     long_description=textwrap.dedent(
         """
-        Solaar is a Linux device manager for many Logitech peripherals that connect through
-        Unifying and other receivers or via USB or Bluetooth.
-        Solaar is able to pair/unpair devices with receivers and show and modify some of the
-        modifiable features of devices.
-        For instructions on installing Solaar see https://pwr-solaar.github.io/Solaar/installation"""
+        Solaar for Windows is a port of Solaar, a device manager for Logitech peripherals.
+        It shows and modifies device settings such as headset sidetone and equalizer, or mouse DPI and lights.
+        Download the portable build from https://github.com/jazzvier1/Solaar-Windows/releases/latest"""
     ),
     author="Daniel Pavel",
     license="GPLv2",
-    url="http://pwr-solaar.github.io/Solaar/",
+    url="https://github.com/jazzvier1/Solaar-Windows",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: X11 Applications :: GTK",
