@@ -17,7 +17,7 @@ def set_locale_de():
         i18n.set_locale_to_system_default()
 
 
-@pytest.mark.skipif(platform.system() == "Linux", reason="Adapt test for Linux")
+@pytest.mark.skipif(platform.system() in ("Linux", "Windows"), reason="LC_ALL only drives setlocale on macOS")
 def test_set_locale_to_system_default(set_locale_de):
     os.environ["LC_ALL"] = "de_DE.UTF-8"
     i18n.set_locale_to_system_default()

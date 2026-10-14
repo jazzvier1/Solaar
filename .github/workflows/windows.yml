@@ -1,0 +1,31 @@
+name: windows
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  test-and-build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          install: git zip
+          pacboy: >-
+            ntldd:p gtk3:p python-gobject:p python-yaml:p python-psutil:p python-typing_extensions:p
+            hidapi:p adwaita-icon-theme:p python-pytest:p python-pytest-mock:p
+
+      - name: Tests
+        run: PYTHONPATH=lib python -m pytest -q tests
+
+      - name: Build portable zip
+        run: bash packaging/windows/build.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Solaar-Windows
+          path: dist/Solaar-Windows.zip
