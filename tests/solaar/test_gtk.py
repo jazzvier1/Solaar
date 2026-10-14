@@ -1,4 +1,5 @@
 import platform
+import uuid
 
 import pytest
 
@@ -33,6 +34,7 @@ def test_arg_parse_version():
 
 
 @pytest.mark.skipif(platform.system() != "Windows", reason="Windows single-instance mutex")
-def test_already_running_detects_second_instance():
-    gtk._already_running()
-    assert gtk._already_running()  # the mutex now exists, whoever created it first
+def test_already_running_detects_second_instance(monkeypatch):
+    monkeypatch.setattr(gtk, "_MUTEX_NAME", rf"Local\SolaarTest-{uuid.uuid4()}")
+    assert not gtk._already_running()
+    assert gtk._already_running()

@@ -69,11 +69,13 @@ If you try one, please [open an issue](https://github.com/jazzvier1/Solaar-Windo
   shortcut to `Solaar.bat` with ` --window=hide` added at the end of its *Target*.
 - **Command line:** in the extracted folder, `solaar-cli show` lists every device and its settings;
   `solaar-cli config G733 sidetone 50` changes one setting. The equalizer is edited from the window (*10 values*).
+  Quit Solaar first (tray icon → *Quit*): otherwise the running Solaar later writes back its own value.
 - **Memory:** while Solaar sits in the tray it hands unused memory back to Windows (~5 MB);
   opening the window brings it back to ~60 MB (Python + GTK).
 
 ### Troubleshooting
 
+- **Double-clicking `Solaar.bat` does nothing:** Solaar is already running. Click its tray icon to open the window.
 - **Device not listed:** quit G HUB completely (including `lghub_agent` and `lghub_updater`), unplug and replug the
   dongle, then run `solaar-cli show`.
 - **Settings change back by themselves:** G HUB is still running and re-applying its own profile.

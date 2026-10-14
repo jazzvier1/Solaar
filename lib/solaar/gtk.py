@@ -159,6 +159,7 @@ def _handlesig(signl, stack):
         sys.exit(0)
 
 
+_MUTEX_NAME = r"Local\Solaar"
 _instance_mutex = None
 
 
@@ -166,7 +167,7 @@ def _already_running():
     # Gtk.Application uniqueness needs D-Bus, which Windows lacks; the named mutex lives as long as this process
     global _instance_mutex
     kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-    _instance_mutex = kernel32.CreateMutexW(None, False, r"Local\Solaar")
+    _instance_mutex = kernel32.CreateMutexW(None, False, _MUTEX_NAME)
     return ctypes.get_last_error() == 183  # ERROR_ALREADY_EXISTS
 
 
