@@ -34,7 +34,7 @@ Other Logitech G devices that expose the HID++ collection `FF43/0202` should wor
 
 No installer, no admin rights, nothing else to install (Python and GTK are bundled):
 
-1. Download **[Solaar-Windows.zip](https://github.com/jazzvier1/Solaar/releases/latest/download/Solaar-Windows.zip)** (~37 MB).
+1. Download **[Solaar-Windows.zip](https://github.com/jazzvier1/Solaar/releases/latest/download/Solaar-Windows.zip)** (~35 MB).
 2. Extract it anywhere, e.g. `C:\Tools\Solaar-Windows`.
 3. Double-click **`Solaar.bat`**.
 
@@ -46,6 +46,8 @@ Settings are stored in `%USERPROFILE%\.config\solaar\config.yaml`.
 
 ## Usage
 
+- **Memory:** with the window open Solaar uses ~60 MB (Python + GTK). While it sits in the tray it hands unused
+  memory back to Windows and stays at ~5 MB of RAM (Task Manager); opening the window brings it back.
 - **Start with Windows, minimized to the tray:** press `Win+R`, type `shell:startup`, and in that folder create a
   shortcut to `Solaar.bat` with `--window=hide` added at the end of its *Target*.
 - **Command line:** in the extracted folder, `solaar-cli show` prints every device and its settings,
