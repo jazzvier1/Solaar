@@ -2,6 +2,8 @@ import platform
 
 from unittest import mock
 
+import pytest
+
 if platform.system() == "Linux":
     import hidapi.udev_impl as hidapi
 else:
@@ -12,9 +14,8 @@ def test_find_paired_node():
     hidapi.enumerate(mock.Mock())
 
 
+@pytest.mark.skipif(platform.system() == "Linux", reason="hidapi backend only")
 def test_match_windows_uses_collection_usage():
-    if platform.system() == "Linux":
-        return
     base = dict(
         vendor_id=0x046D,
         product_id=0x0AB5,
