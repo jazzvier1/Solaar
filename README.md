@@ -5,7 +5,7 @@
 # Solaar for Windows
 
 **A lightweight, telemetry-free alternative to Logitech G HUB.**<br>
-Sidetone, equalizer, battery and LEDs for Logitech G headsets. No account, no background services, no data collection.
+Sidetone, equalizer, battery and LEDs for Logitech G headsets, DPI and lights for wired Logitech G mice. No account, no background services, no data collection.
 
 [![Latest release](https://img.shields.io/github/v/release/jazzvier1/Solaar-Windows?label=release)](https://github.com/jazzvier1/Solaar-Windows/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/jazzvier1/Solaar-Windows/total)](https://github.com/jazzvier1/Solaar-Windows/releases)
@@ -42,7 +42,7 @@ or right-click the zip → *Properties* → *Unblock* before extracting.
 
 ## What works
 
-Tested on a Logitech **G733** headset (USB Lightspeed dongle).
+Headsets tested: **G733** (USB Lightspeed dongle) and **G935**.
 
 | Feature | Status |
 |---|:---:|
@@ -51,6 +51,7 @@ Tested on a Logitech **G733** headset (USB Lightspeed dongle).
 | Battery level and voltage | ✅ |
 | LED effects | ✅ read · changing them is untested |
 | Tray icon, start minimized | ✅ |
+| Wired Logitech G mice (e.g. G203): DPI and lights | 🧪 new, feedback welcome |
 | Blue VO!CE | ❌ |
 | Mice and keyboards on Unifying / Bolt / Lightspeed receivers | ❌ not yet |
 | Rules and key remapping | ❌ Linux only |
@@ -75,6 +76,10 @@ If you try one, please [open an issue](https://github.com/jazzvier1/Solaar-Windo
 - **Device not listed:** quit G HUB completely (including `lghub_agent` and `lghub_updater`), unplug and replug the
   dongle, then run `solaar-cli show`.
 - **Settings change back by themselves:** G HUB is still running and re-applying its own profile.
+- **Mouse DPI does not change:** set *Onboard Profiles* to *Disabled* in Solaar first; while an onboard profile is
+  active the mouse uses the DPI stored in that profile.
+- **Report a device that is not detected:** close Solaar and run `solaar-cli -dd show`; the `Found device ... usage`
+  lines show what Windows exposes. Paste them in an issue.
 
 ## Build from source
 

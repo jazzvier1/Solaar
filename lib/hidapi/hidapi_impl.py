@@ -67,10 +67,11 @@ _library_paths = (
     "libhidapi-0.dll",
 )
 
-# Windows rejects HID_GET_INPUT_REPORT on HID++ reports, so HID++ is recognized by collection usage instead.
-# shortcut: only the Logitech G long-report collection (headsets etc.), receivers split short/long across
-# collections on Windows and need per-report-ID paths before they can be added here
-_WINDOWS_HIDPP_LONG_USAGES = {(0xFF43, 0x0202)}
+# Windows rejects HID_GET_INPUT_REPORT on HID++ reports, so HID++ is recognized by collection usage instead:
+# FF43/0202 is the Logitech G headset collection, FF00/0002 the long-report collection of wired mice and keyboards.
+# shortcut: devices are driven with long reports only and short notifications (e.g. DPI button presses) are missed;
+# receivers need short reports, which Windows puts in another collection, so they are not supported yet
+_WINDOWS_HIDPP_LONG_USAGES = {(0xFF43, 0x0202), (0xFF00, 0x0002)}
 
 for lib in _library_paths:
     try:
@@ -280,7 +281,9 @@ def _match(
             device["hidpp_long"] = True
 
     if platform.system() == "Windows":
-        device["hidpp_long"] = (device["usage_page"], device["usage"]) in _WINDOWS_HIDPP_LONG_USAGES
+        # FF00 is the generic vendor-defined page, so only trust it on Logitech devices
+        usage = (device["usage_page"], device["usage"])
+        device["hidpp_long"] = vid == LOGITECH_VENDOR_ID and usage in _WINDOWS_HIDPP_LONG_USAGES
     else:
         try:
             device_handle = open_path(device["path"])
@@ -300,10 +303,12 @@ def _match(
                 close(device_handle)
 
     logger.info(
-        "Found device BID %s VID %04X PID %04X HID++ SHORT %s LONG %s",
+        "Found device BID %s VID %04X PID %04X usage %04X/%04X HID++ SHORT %s LONG %s",
         bus_id,
         vid,
         pid,
+        device["usage_page"],
+        device["usage"],
         device["hidpp_short"],
         device["hidpp_long"],
     )
@@ -315,6 +320,8 @@ def _match(
     if not filtered_result:
         return
     is_device = filtered_result.get("isDevice")
+    if platform.system() == "Windows" and not is_device:
+        return None  # receivers: see _WINDOWS_HIDPP_LONG_USAGES
 
     if action == ACTION_ADD:
         d_info = DeviceInfo(
