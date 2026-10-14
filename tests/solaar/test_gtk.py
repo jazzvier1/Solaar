@@ -1,3 +1,8 @@
+import platform
+
+import pytest
+
+from solaar import gtk
 from solaar.gtk import create_parser
 
 
@@ -25,3 +30,9 @@ def test_arg_parse_version():
     res = parser.parse_args(["version"])
 
     assert res
+
+
+@pytest.mark.skipif(platform.system() != "Windows", reason="Windows single-instance mutex")
+def test_already_running_detects_second_instance():
+    gtk._already_running()
+    assert gtk._already_running()  # the mutex now exists, whoever created it first

@@ -6,7 +6,7 @@ cd "$(dirname "$0")/../.."
 git -c core.autocrlf=true diff --quiet HEAD || { echo "Commit your changes first: the zip is built from HEAD"; exit 1; }
 
 P=/ucrt64
-PY=$(basename "$(ls -d $P/lib/python3.*/ | head -1)")
+PY=$(python -c 'import sys; print(f"python{sys.version_info[0]}.{sys.version_info[1]}")')
 OUT=dist/Solaar-Windows
 RT=$OUT/runtime
 rm -rf dist

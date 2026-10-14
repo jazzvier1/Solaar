@@ -150,8 +150,10 @@ def do_save():
             save_timer.cancel()
             save_timer = None
         try:
-            with open(_yaml_file_path, "w") as config_file:
+            # write a temp file and swap it in, so a kill mid-save cannot leave a truncated config
+            with open(_yaml_file_path + ".tmp", "w") as config_file:
                 yaml.dump(_config, config_file, default_flow_style=None, width=150)
+            os.replace(_yaml_file_path + ".tmp", _yaml_file_path)
             logger.info("saved %s to %s", _config, _yaml_file_path)
         except Exception as e:
             logger.error("failed to save to %s: %s", _yaml_file_path, e)
